@@ -1,0 +1,103 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="IK.js"></script>
+    <script>
+     window.onload = function(){
+       var svg = d3.select("svg");
+       
+       function visualizeTree(tree){
+         svg.selectAll("line").remove();
+         svg.selectAll("circle").remove();
+         
+         function dfs(l){
+           if(l.c.length>0){
+             _.each(l.c, function(c){
+               dfs(c);
+               svg.append("line")
+                  .attr({
+                    x1: c.x,
+                    y1: c.y,
+                    x2: l.x,
+                    y2: l.y,
+                    stroke: "#deebf7",
+                    "stroke-width": 3
+                  });
+             });
+           }
+
+           svg.append("circle")
+              .attr({
+                cx: l.x,
+                cy: l.y,
+                r: 10,
+                fill: "steelblue",
+                stroke: "none"
+              });
+         }
+         
+         dfs(tree);
+       }
+
+       var cx = d3.select("body").node().clientWidth/2;
+       var cy = d3.select("body").node().clientHeight/2;
+       var target = [];
+
+       var tree = {
+         x:cx,
+         y:cy,
+         c: [
+           {
+             x: cx + 100,
+             y: cy,
+             c: [
+               {
+                 x: cx + 200,
+                 y: cy,
+                 c: [
+                   {
+                     x: cx + 300,
+                     y: cy,
+                     target: target,
+                     c: [
+                     ]
+                   }
+                 ]
+               },{
+                 x: cx + 150,
+                 y: cy + 70,
+                 c: [
+                   {
+                     x: cx + 150,
+                     y: cy + 170,
+                     target: [
+                       cx + 150,
+                       cy + 170,
+                     ],
+                     c: [
+                     ]
+                   }
+                 ]
+               }
+             ]
+           }
+         ]
+       };
+
+       svg.on("click", function(){
+         target[0] = d3.event.pageX;
+         target[1] = d3.event.pageY;
+         
+         var new_tree = IK(tree);
+         visualizeTree(new_tree);
+       });
+
+       visualizeTree(tree);
+     }
+    </script>
+  </head>
+  <body>
+    <svg style="width:100%; height: 100%;"></svg>
+  </body>
+</html>
