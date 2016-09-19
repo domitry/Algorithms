@@ -1,0 +1,86 @@
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="divide.js"></script>
+    <script>
+     window.onload = function(){
+       var points = [];
+       var svg = d3.select("svg");
+
+       function line(p1, p2){
+         svg
+           .append("line")
+           .attr({
+             x1: p1[0],
+             y1: p1[1],
+             x2: p2[0],
+             y2: p2[1],
+             stroke: "black",
+             "stroke-width": 3
+           })
+       }
+
+       function clear(){
+         d3.selectAll("circle").remove();
+         d3.selectAll("line").remove();
+         d3.selectAll("path").remove();
+       }
+       
+       svg
+           .on("click", function(){
+             var x = d3.event.pageX;
+             var y = d3.event.pageY;
+
+             if(points.length==0){
+               clear();
+             }else{
+               line(points[points.length-1], [x, y]);
+             }
+
+             var i = points.length;
+             points.push([x, y]);
+             
+             var c = svg
+                       .append("circle")
+                       .attr({
+                         cx: x,
+                         cy: y,
+                         r: 10,
+                         stroke: "none",
+                         fill: "#ff0000"
+                       })
+                       .on("click", function(){
+                         d3.event.stopPropagation();
+                         
+                         if(points.length-i >= 3){
+                           line(points[points.length-1], points[i]);
+                           
+                           var ts = divideToTriangles(points);
+                           var func = d3.svg.line()
+                                        .x(function(d){return d[0];})
+                                        .y(function(d){return d[1];})
+                                        .interpolate("linear");
+
+                           _.each(ts, function(t){
+                             t.push(_.first(t));
+                             svg.append("path")
+                                .datum(t)
+                                .attr({
+                                  d: func,
+                                  stroke: "steelblue",
+                                  fill: "#deebf7"
+                                });
+                           });
+                           
+                           points = [];
+                         }
+                       })
+           })
+     }
+    </script>
+  </head>
+  <body>
+    <svg style="width:100%; height: 100%;"></svg>
+  </body>
+</html>
