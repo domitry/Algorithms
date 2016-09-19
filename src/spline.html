@@ -22,8 +22,8 @@
        function h10(t){return t*t*t-2*t*t+t;}
        function h01(t){return -2*t*t*t+3*t*t;}
        function h11(t){return t*t*t-t*t;}
-       function px(t){return h00(t)*p[0][0]+h10(t)*m[0][0]+h01(t)*p[1][0]+h11(t)*m[1][0];}
-       function py(t){return h00(t)*p[0][1]+h10(t)*m[0][1]+h01(t)*p[1][1]+h11(t)*m[1][1];}
+       function px(t){return h00(t)*p[0][0]+h10(t)*3*m[0][0]+h01(t)*p[1][0]+h11(t)*3*m[1][0];}
+       function py(t){return h00(t)*p[0][1]+h10(t)*3*m[0][1]+h01(t)*p[1][1]+h11(t)*3*m[1][1];}
 
        function drawSpline(){
          var line = d3.svg.line()
