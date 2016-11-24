@@ -1,6 +1,6 @@
 /*global _*/
 
-function four_bar(a, b, c, theta1){
+function four_bar(a, b, c, theta1, pm){
     var cos = Math.cos, sin = Math.sin, atan = Math.atan, sqrt=Math.sqrt;
     
     return _.map(theta1, function(t1){
@@ -10,6 +10,6 @@ function four_bar(a, b, c, theta1){
         var E = -2*sin(t1);
         var F = k1-(k2+1)*cos(t1)+k3;
         if(E*E-4*D*F<0.)console.warn("E*E<4*D*F");
-        return 2*atan((-E+sqrt(E*E-4*D*F))/(2*D));
+        return 2*atan((-E+ (pm?1:-1)*sqrt(E*E-4*D*F))/(2*D));
     });
 }
